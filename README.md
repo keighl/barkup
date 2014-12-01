@@ -9,6 +9,8 @@ Barkup is a library for backing things up. It provides tools for writing bare-bo
 
 **Storers:** `S3`
 
+[Docs at http://godoc.org/github.com/keighl/barkup](http://godoc.org/github.com/keighl/barkup)
+
 ### E.g. MySQL to S3
 
 ```go
