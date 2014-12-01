@@ -1,0 +1,59 @@
+package barkup
+
+import (
+  "os"
+  "bufio"
+  "launchpad.net/goamz/aws"
+  "launchpad.net/goamz/s3"
+)
+
+// S3 is a `Storer` interface that puts an ExportResult to the specified S3 bucket. Don't use your main AWS keys for this!! Create read-only keys using IAM
+type S3 struct {
+  // Available regions:
+  // * us-east-1
+  // * us-west-1
+  // * us-west-2
+  // * eu-west-1
+  // * ap-southeast-1
+  // * ap-southeast-2
+  // * ap-northeast-1
+  // * sa-east-1
+  Region string
+  // Name of the bucjet
+  Bucket string
+  // AWS S3 access key
+  AccessKey string
+  // AWS S3 secret
+  ClientSecret string
+}
+
+// Puts an `ExportResult` struct to an S3 bucket within the specified directory
+func (x *S3) Store(result *ExportResult, directory string) (error) {
+
+  if (result.Error != nil) {
+    return result.Error
+  }
+
+  file, err := os.Open(result.Path)
+  if err != nil { return err }
+  defer file.Close()
+
+  buffy := bufio.NewReader(file)
+  stat, err := file.Stat()
+  if err != nil { return err }
+
+  size := stat.Size()
+
+  auth := aws.Auth{
+    AccessKey: x.AccessKey,
+    SecretKey: x.ClientSecret,
+  }
+
+  s := s3.New(auth, aws.Regions[x.Region])
+  bucket := s.Bucket(x.Bucket)
+
+  // TODO parse MIME from result file
+
+  err = bucket.PutReader(directory + result.Filename(), buffy, size, result.MIME, s3.BucketOwnerFull)
+  return err
+}
