@@ -14,6 +14,8 @@ Barkup is a library for backing things up. It provides tools for writing bare-bo
 ### E.g. MySQL to S3
 
 ```go
+// dbbackup/main.go
+
 package main
 
 import (
@@ -44,5 +46,17 @@ func main() {
   err := mysql.Export().To("db_backups/", s3)
   if (err != nil) { panic(err) }
 }
+```
+
+Build it!
+
+```
+$ go build
+```
+
+CRON it, maybe?
+
+```
+@hourly /path/to/dbbackup
 ```
 

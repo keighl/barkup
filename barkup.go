@@ -3,6 +3,7 @@ package barkup
 import (
   "os/exec"
   "path/filepath"
+  "os"
 )
 
 //////////////
@@ -38,6 +39,9 @@ func (x *ExportResult) To(directory string, store Storer) (error) {
   }
 
   err := store.Store(x, directory)
+  if (err != nil) { return err }
+
+  err = os.Remove(x.Path)
   return err
 }
 

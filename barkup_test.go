@@ -55,12 +55,14 @@ func (x *StoreFailureStory) Store(r *ExportResult, d string) (error) {
 }
 
 func Test_ExportRestult_To_Store(t *testing.T) {
+  _, _ = os.Create("test/test.txt")
   e := &ExportResult{"test/test.txt", "text/plain", nil}
   err := e.To("test/", &StoreSuccessStory{})
   expect(t, err, nil)
 }
 
 func Test_ExportRestult_To_Store_Fail(t *testing.T) {
+  _, _ = os.Create("test/test.txt")
   e := &ExportResult{"test/test.txt", "text/plain", nil}
   err := e.To("test/", &StoreFailureStory{})
   refute(t, err, nil)

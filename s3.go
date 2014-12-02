@@ -52,8 +52,6 @@ func (x *S3) Store(result *ExportResult, directory string) (error) {
   s := s3.New(auth, aws.Regions[x.Region])
   bucket := s.Bucket(x.Bucket)
 
-  // TODO parse MIME from result file
-
   err = bucket.PutReader(directory + result.Filename(), buffy, size, result.MIME, s3.BucketOwnerFull)
   return err
 }

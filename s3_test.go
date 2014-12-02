@@ -4,6 +4,7 @@ import (
   "testing"
   "launchpad.net/goamz/aws"
   "errors"
+  "os"
 )
 
 func Test_S3_Store_Success(t *testing.T) {
@@ -38,6 +39,7 @@ func Test_S3_Store_Fail(t *testing.T) {
     ClientSecret: "adsfljdsahfl",
   }
 
+  _, _ = os.Create("test/test.txt")
   err := s.Store(&ExportResult{"test/test.txt", "text/plain", nil}, "test/")
   refute(t, err, nil)
 }
@@ -50,6 +52,7 @@ func Test_S3_Store_ExportError(t *testing.T) {
     ClientSecret: "adsfljdsahfl",
   }
 
+  _, _ = os.Create("test/test.txt")
   err := s.Store(&ExportResult{"", "text/plain", errors.New("*****")}, "test/")
   refute(t, err, nil)
 }
