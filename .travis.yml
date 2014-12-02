@@ -1,4 +1,4 @@
 language: go
-
 go:
   - tip
+before_script: mkdir test
