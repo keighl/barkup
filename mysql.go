@@ -19,28 +19,9 @@ type MySQL struct {
   User string
   // DB Password
   Password string
-}
-
-var mysqlDump = func(x MySQL, path string) error {
-  args := []string{
-    fmt.Sprintf(`-r%v`, path),
-    fmt.Sprintf(`-h%v`, x.Host),
-    fmt.Sprintf(`-P%v`, x.Port),
-    fmt.Sprintf(`-u%v`, x.User),
-    fmt.Sprintf(`-p%v`, x.Password),
-    x.DB,
-  }
-
-  _, err := exec.Command("mysqldump", args...).Output()
-  return err
-}
-
-var mysqlTar = func(x MySQL, path string, destPath string) error {
-  _, err := exec.Command("tar", "-cz", "-f"+destPath, path).Output()
-  if (err != nil) { return err }
-
-  err = os.Remove(path)
-  return err
+  // Extra mysqldump options
+  // e.g []string{"--extended-insert"}
+  Options []string
 }
 
 // Produces a `mysqldump` of the specified database, and creates a gzip compressed tarball archive.
@@ -60,3 +41,25 @@ func (x MySQL) Export() (*ExportResult) {
   return result
 }
 
+var mysqlDump = func(x MySQL, path string) error {
+  options := append(x.dumpOptions(), fmt.Sprintf(`-r%v`, path))
+  _, err := exec.Command("mysqldump", options...).Output()
+  if (err != nil) { return err }
+  return err
+}
+
+var mysqlTar = func(x MySQL, path string, destPath string) error {
+  _, err := exec.Command("tar", "-cz", "-f"+destPath, path).Output()
+  if (err != nil) { return err }
+  return os.Remove(path)
+}
+
+func (x MySQL) dumpOptions() []string {
+  options := x.Options
+  options = append(options, fmt.Sprintf(`-h%v`, x.Host))
+  options = append(options, fmt.Sprintf(`-P%v`, x.Port))
+  options = append(options, fmt.Sprintf(`-u%v`, x.User))
+  options = append(options, fmt.Sprintf(`-p%v`, x.Password))
+  options = append(options, x.DB)
+  return options
+}
