@@ -2,7 +2,6 @@ package barkup
 
 import (
   "testing"
-  "errors"
   "strings"
 )
 
@@ -14,8 +13,7 @@ func Test_Postgres_Export_Pass(t *testing.T) {
     Username: "postgres",
   }
 
-  pgDump = func (x Postgres, path string) error { return nil }
-  pgTar = func (x Postgres, path string, destPath string) error { return nil }
+  pgDumpCmd = "true"
 
   result := p.Export()
   expect(t, result.Error, nil)
@@ -29,23 +27,7 @@ func Test_Postgres_Export_FailDump(t *testing.T) {
     Username: "postgres",
   }
 
-  pgDump = func (x Postgres, path string) error { return errors.New("***") }
-  pgTar = func (x Postgres, path string, destPath string) error { return nil }
-
-  result := p.Export()
-  refute(t, result.Error, nil)
-}
-
-func Test_Postgres_Export_FailTar(t *testing.T) {
-  p := Postgres{
-    Host: "localhost",
-    Port: "5432",
-    DB: "test",
-    Username: "postgres",
-  }
-
-  pgDump = func (x Postgres, path string) error { return nil }
-  pgTar = func (x Postgres, path string, destPath string) error { return errors.New("***") }
+  pgDumpCmd = "false"
 
   result := p.Export()
   refute(t, result.Error, nil)

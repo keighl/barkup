@@ -2,7 +2,6 @@ package barkup
 
 import (
   "testing"
-  "errors"
   "strings"
 )
 
@@ -15,8 +14,8 @@ func Test_MySQL_Export_Pass(t *testing.T) {
     Password: "cheese",
   }
 
-  mysqlDump = func (x MySQL, path string) error { return nil }
-  mysqlTar = func (x MySQL, path string, destPath string) error { return nil }
+  mysqlDumpCmd = "true"
+  tarCmd = "true"
 
   result := m.Export()
   expect(t, result.Error, nil)
@@ -31,8 +30,8 @@ func Test_MySQL_Export_FailDump(t *testing.T) {
     Password: "cheese",
   }
 
-  mysqlDump = func (x MySQL, path string) error { return errors.New("***") }
-  mysqlTar = func (x MySQL, path string, destPath string) error { return nil }
+  mysqlDumpCmd = "false"
+  tarCmd = "true"
 
   result := m.Export()
   refute(t, result.Error, nil)
@@ -47,8 +46,8 @@ func Test_MySQL_Export_FailTar(t *testing.T) {
     Password: "cheese",
   }
 
-  mysqlDump = func (x MySQL, path string) error { return nil }
-  mysqlTar = func (x MySQL, path string, destPath string) error { return errors.New("***") }
+  mysqlDumpCmd = "true"
+  tarCmd = "false"
 
   result := m.Export()
   refute(t, result.Error, nil)

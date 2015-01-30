@@ -4,8 +4,9 @@ import (
   "fmt"
   "time"
   "os/exec"
-  "os"
 )
+
+var pgDumpCmd string = "pg_dump"
 
 // Postgres is an `Exporter` interface that backs up a Postgres database via the `pg_dump` command
 type Postgres struct {
@@ -25,17 +26,10 @@ type Postgres struct {
 // Produces a `pg_dump` of the specified database, and creates a gzip compressed tarball archive.
 func (x Postgres) Export() (*ExportResult) {
   result := &ExportResult{MIME: "application/x-tar"}
-
-  dumpPath := fmt.Sprintf(`bu_%v_%v.sql`, x.DB, time.Now().Unix())
-
-  result.Error = pgDump(x, dumpPath)
-  if (result.Error != nil) { return result }
-
-  tarPath := dumpPath+".tar.gz"
-  result.Error = pgTar(x, dumpPath, tarPath)
-  if (result.Error != nil) { return result }
-
-  result.Path = tarPath
+  result.Path = fmt.Sprintf(`bu_%v_%v.sql.tar.gz`, x.DB, time.Now().Unix())
+  options := append(x.dumpOptions(), "-Fc", fmt.Sprintf(`-f%v`, result.Path))
+  _, err := exec.Command(pgDumpCmd, options...).Output()
+  result.Error = err
   return result
 }
 
@@ -61,14 +55,3 @@ func (x Postgres) dumpOptions() []string {
   return options
 }
 
-var pgDump = func(x Postgres, path string) error {
-  options := append(x.dumpOptions(), fmt.Sprintf(`-f%v`, path))
-  _, err := exec.Command("pg_dump", options...).Output()
-  return err
-}
-
-var pgTar = func(x Postgres, path string, destPath string) error {
-  _, err := exec.Command("tar", "-cz", "-f"+destPath, path).Output()
-  if (err != nil) { return err }
-  return os.Remove(path)
-}

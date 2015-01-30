@@ -7,7 +7,7 @@ https://travis-ci.org/keighl/barkup)
 
 Barkup is a library for backing things up. It provides tools for writing bare-bones backup programs in Go. The library is broken out into **exporters** and **storers**. Currently, those are:
 
-**Exporters:** `MySQL` `Postgres`
+**Exporters:** `MySQL` `Postgres` `RethinkDB`
 
 **Storers:** `S3`
 
@@ -136,6 +136,27 @@ Or, run the backup program from an authenticated user, like `postgres`:
 $ sudo -i -u postgres
 $ ./backup-program
 ```
+---
+
+### RethinkDB
+
+The RethinkDB exporter uses `rethinkdb dump` to make a gzipped archive of your cluster. `rethinkdb` must be installed on your system.
+
+**Usage**
+
+```go
+rethink := &barkup.RethinkDB{
+  Name: "nightly",
+  Connection: "0.0.0.0:28015",
+  // You can specify specific databases and/or tables to dump (by default it dumps your whole cluster)
+  Targets: []string{"site", "leads.contacts"},
+}
+
+// Writes a file `./bu_nightly_TIMESTAMP.tar.gz`
+result := rethink.Export()
+if (result.Error != nil) { panic(result.Error) }
+```
+
 ## Storers
 
 Storers take an `ExportResult` object and provide a common interface for moving a backup to someplace safe.

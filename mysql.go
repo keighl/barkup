@@ -7,6 +7,9 @@ import (
   "os"
 )
 
+var tarCmd string = "tar"
+var mysqlDumpCmd string = "mysqldump"
+
 // MySQL is an `Exporter` interface that backs up a MySQL database via the `mysqldump` command
 type MySQL struct {
   // DB Host (e.g. 127.0.0.1)
@@ -30,28 +33,18 @@ func (x MySQL) Export() (*ExportResult) {
 
   dumpPath := fmt.Sprintf(`bu_%v_%v.sql`, x.DB, time.Now().Unix())
 
-  result.Error = mysqlDump(x, dumpPath)
+  options := append(x.dumpOptions(), fmt.Sprintf(`-r%v`, dumpPath))
+  _, err := exec.Command(mysqlDumpCmd, options...).Output()
+  result.Error = err
   if (result.Error != nil) { return result }
 
-  tarPath := dumpPath+".tar.gz"
-  result.Error = mysqlTar(x, dumpPath, tarPath)
-  if (result.Error != nil) { return result }
+  result.Path = dumpPath+".tar.gz"
+  _, err = exec.Command(tarCmd, "-czf", result.Path, dumpPath).Output()
+  result.Error = err
+  if (err != nil) { return result }
+  os.Remove(dumpPath)
 
-  result.Path = tarPath
   return result
-}
-
-var mysqlDump = func(x MySQL, path string) error {
-  options := append(x.dumpOptions(), fmt.Sprintf(`-r%v`, path))
-  _, err := exec.Command("mysqldump", options...).Output()
-  if (err != nil) { return err }
-  return err
-}
-
-var mysqlTar = func(x MySQL, path string, destPath string) error {
-  _, err := exec.Command("tar", "-cz", "-f"+destPath, path).Output()
-  if (err != nil) { return err }
-  return os.Remove(path)
 }
 
 func (x MySQL) dumpOptions() []string {
