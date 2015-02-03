@@ -1,9 +1,9 @@
 # Barkup
 
 [![Build Status](https://travis-ci.org/keighl/barkup.png?branch=master)](
-https://travis-ci.org/keighl/barkup)
+https://travis-ci.org/keighl/barkup) [![Coverage Status](https://coveralls.io/repos/keighl/barkup/badge.svg?branch=master)](https://coveralls.io/r/keighl/barkup?branch=master)
 
-[godoc.org/github.com/keighl/barkup](http://godoc.org/github.com/keighl/barkup) [![Coverage Status](https://coveralls.io/repos/keighl/barkup/badge.svg?branch=master)](https://coveralls.io/r/keighl/barkup?branch=master)
+[godoc.org/github.com/keighl/barkup](http://godoc.org/github.com/keighl/barkup)
 
 Barkup is a library for backing things up. It provides tools for writing bare-bones backup programs in Go. The library is broken out into **exporters** and **storers**. Currently, those are:
 
