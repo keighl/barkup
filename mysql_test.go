@@ -14,8 +14,8 @@ func Test_MySQL_Export_Pass(t *testing.T) {
     Password: "cheese",
   }
 
-  mysqlDumpCmd = "true"
-  tarCmd = "true"
+  MysqlDumpCmd = "true"
+  TarCmd = "true"
 
   result := m.Export()
   expect(t, result.Error, nil)
@@ -30,8 +30,8 @@ func Test_MySQL_Export_FailDump(t *testing.T) {
     Password: "cheese",
   }
 
-  mysqlDumpCmd = "false"
-  tarCmd = "true"
+  MysqlDumpCmd = "false"
+  TarCmd = "true"
 
   result := m.Export()
   refute(t, result.Error, nil)
@@ -46,8 +46,8 @@ func Test_MySQL_Export_FailTar(t *testing.T) {
     Password: "cheese",
   }
 
-  mysqlDumpCmd = "true"
-  tarCmd = "false"
+  MysqlDumpCmd = "true"
+  TarCmd = "false"
 
   result := m.Export()
   refute(t, result.Error, nil)

@@ -11,7 +11,7 @@ func Test_RethinkDB_Export_Pass(t *testing.T) {
     Name: "test",
   }
 
-  rethinkCmd = "true"
+  RethinkCmd = "true"
 
   result := m.Export()
   expect(t, result.Error, nil)
@@ -23,7 +23,7 @@ func Test_RethinkDB_Export_FailDump(t *testing.T) {
     Name: "test",
   }
 
-  rethinkCmd = "false"
+  RethinkCmd = "false"
 
   result := m.Export()
   refute(t, result.Error, nil)

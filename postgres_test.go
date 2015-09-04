@@ -13,7 +13,7 @@ func Test_Postgres_Export_Pass(t *testing.T) {
     Username: "postgres",
   }
 
-  pgDumpCmd = "true"
+  PGDumpCmd = "true"
 
   result := p.Export()
   expect(t, result.Error, nil)
@@ -27,7 +27,7 @@ func Test_Postgres_Export_FailDump(t *testing.T) {
     Username: "postgres",
   }
 
-  pgDumpCmd = "false"
+  PGDumpCmd = "false"
 
   result := p.Export()
   refute(t, result.Error, nil)

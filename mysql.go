@@ -7,8 +7,11 @@ import (
   "os"
 )
 
-var tarCmd string = "tar"
-var mysqlDumpCmd string = "mysqldump"
+// TarCmd is the path to the `tar` executable
+var TarCmd string = "tar"
+
+// MysqlDumpCmd is the path to the `mysqldump` executable
+var MysqlDumpCmd string = "mysqldump"
 
 // MySQL is an `Exporter` interface that backs up a MySQL database via the `mysqldump` command
 type MySQL struct {
@@ -34,12 +37,12 @@ func (x MySQL) Export() (*ExportResult) {
   dumpPath := fmt.Sprintf(`bu_%v_%v.sql`, x.DB, time.Now().Unix())
 
   options := append(x.dumpOptions(), fmt.Sprintf(`-r%v`, dumpPath))
-  _, err := exec.Command(mysqlDumpCmd, options...).Output()
+  _, err := exec.Command(MysqlDumpCmd, options...).Output()
   result.Error = err
   if (result.Error != nil) { return result }
 
   result.Path = dumpPath+".tar.gz"
-  _, err = exec.Command(tarCmd, "-czf", result.Path, dumpPath).Output()
+  _, err = exec.Command(TarCmd, "-czf", result.Path, dumpPath).Output()
   result.Error = err
   if (err != nil) { return result }
   os.Remove(dumpPath)
