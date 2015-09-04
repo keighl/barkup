@@ -1,6 +1,7 @@
 language: go
 go:
   - tip
+
 before_script: mkdir test
 
 before_install:
@@ -9,3 +10,5 @@ before_install:
   - if ! go get code.google.com/p/go.tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
 script:
     - $HOME/gopath/bin/goveralls -service=travis-ci
+
+sudo: false
