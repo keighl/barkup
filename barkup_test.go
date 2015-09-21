@@ -37,35 +37,47 @@ func Test_ExportRestult_To_Move(t *testing.T) {
 	defer file.Close()
 
 	e := ExportResult{"to_mv_test", "text/plain", nil}
-	err := e.To("test/", nil)
-	expect(t, err, nil)
+	storeErr := e.To("test/", nil)
+	expect(t, storeErr, (*Error)(nil))
 
-	err = os.Remove("test/to_mv_test")
+	err := os.Remove("test/to_mv_test")
 	expect(t, err, nil)
 }
 
 type StoreSuccessStory struct{}
 
-func (x *StoreSuccessStory) Store(r *ExportResult, d string) error {
+func (x *StoreSuccessStory) Store(r *ExportResult, d string) *Error {
 	return nil
 }
 
 type StoreFailureStory struct{}
 
-func (x *StoreFailureStory) Store(r *ExportResult, d string) error {
-	return errors.New("*****")
+func (x *StoreFailureStory) Store(r *ExportResult, d string) *Error {
+	return &Error{
+		err: errors.New("*****"),
+	}
 }
 
 func Test_ExportRestult_To_Store(t *testing.T) {
 	_, _ = os.Create("test/test.txt")
 	e := &ExportResult{"test/test.txt", "text/plain", nil}
 	err := e.To("test/", &StoreSuccessStory{})
-	expect(t, err, nil)
+	expect(t, err, (*Error)(nil))
 }
 
 func Test_ExportRestult_To_Store_Fail(t *testing.T) {
 	_, _ = os.Create("test/test.txt")
 	e := &ExportResult{"test/test.txt", "text/plain", nil}
 	err := e.To("test/", &StoreFailureStory{})
-	refute(t, err, nil)
+	refute(t, err, (*Error)(nil))
+}
+
+/// Error
+
+func Test_Error(t *testing.T) {
+	e := Error{
+		err:       fmt.Errorf("cheese"),
+		CmdOutput: "CHEEEEES",
+	}
+	expect(t, e.Error(), "cheese")
 }

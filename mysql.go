@@ -7,11 +7,12 @@ import (
 	"time"
 )
 
-// TarCmd is the path to the `tar` executable
-var TarCmd string = "tar"
-
-// MysqlDumpCmd is the path to the `mysqldump` executable
-var MysqlDumpCmd string = "mysqldump"
+var (
+	// TarCmd is the path to the `tar` executable
+	TarCmd = "tar"
+	// MysqlDumpCmd is the path to the `mysqldump` executable
+	MysqlDumpCmd = "mysqldump"
+)
 
 // MySQL is an `Exporter` interface that backs up a MySQL database via the `mysqldump` command
 type MySQL struct {
@@ -30,23 +31,23 @@ type MySQL struct {
 	Options []string
 }
 
-// Produces a `mysqldump` of the specified database, and creates a gzip compressed tarball archive.
+// Export produces a `mysqldump` of the specified database, and creates a gzip compressed tarball archive.
 func (x MySQL) Export() *ExportResult {
 	result := &ExportResult{MIME: "application/x-tar"}
 
 	dumpPath := fmt.Sprintf(`bu_%v_%v.sql`, x.DB, time.Now().Unix())
 
 	options := append(x.dumpOptions(), fmt.Sprintf(`-r%v`, dumpPath))
-	_, err := exec.Command(MysqlDumpCmd, options...).Output()
-	result.Error = err
-	if result.Error != nil {
+	out, err := exec.Command(MysqlDumpCmd, options...).Output()
+	if err != nil {
+		result.Error = makeErr(err, string(out))
 		return result
 	}
 
 	result.Path = dumpPath + ".tar.gz"
 	_, err = exec.Command(TarCmd, "-czf", result.Path, dumpPath).Output()
-	result.Error = err
 	if err != nil {
+		result.Error = makeErr(err, string(out))
 		return result
 	}
 	os.Remove(dumpPath)

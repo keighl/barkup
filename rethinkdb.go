@@ -6,8 +6,10 @@ import (
 	"time"
 )
 
-// RethinkCmd is the path to the `rethinkdb` executable
-var RethinkCmd string = "rethinkdb"
+var (
+	// RethinkCmd is the path to the `rethinkdb` executable
+	RethinkCmd = "rethinkdb"
+)
 
 // RethinkDB is an `Exporter` interface that backs up a RethinkDB cluster via the `rethinkdb dump` command
 type RethinkDB struct {
@@ -25,13 +27,15 @@ type RethinkDB struct {
 	Options []string
 }
 
-// Produces a gzip compressed tarball archive of the rethink cluster (or targetted DBs/tables)
+// Export produces a gzip compressed tarball archive of the rethink cluster (or targetted DBs/tables)
 func (x RethinkDB) Export() *ExportResult {
 	result := &ExportResult{MIME: "application/x-tar"}
 	result.Path = fmt.Sprintf(`bu_%v_%v.tar.gz`, x.Name, time.Now().Unix())
 	options := append(x.dumpOptions(), fmt.Sprintf(`-f%v`, result.Path))
-	_, err := exec.Command(RethinkCmd, options...).Output()
-	result.Error = err
+	out, err := exec.Command(RethinkCmd, options...).Output()
+	if err != nil {
+		result.Error = makeErr(err, string(out))
+	}
 	return result
 }
 

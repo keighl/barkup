@@ -27,8 +27,8 @@ type S3 struct {
 	ClientSecret string
 }
 
-// Puts an `ExportResult` struct to an S3 bucket within the specified directory
-func (x *S3) Store(result *ExportResult, directory string) error {
+// Store puts an `ExportResult` struct to an S3 bucket within the specified directory
+func (x *S3) Store(result *ExportResult, directory string) *Error {
 
 	if result.Error != nil {
 		return result.Error
@@ -36,14 +36,14 @@ func (x *S3) Store(result *ExportResult, directory string) error {
 
 	file, err := os.Open(result.Path)
 	if err != nil {
-		return err
+		return makeErr(err, "")
 	}
 	defer file.Close()
 
 	buffy := bufio.NewReader(file)
 	stat, err := file.Stat()
 	if err != nil {
-		return err
+		return makeErr(err, "")
 	}
 
 	size := stat.Size()
@@ -57,5 +57,5 @@ func (x *S3) Store(result *ExportResult, directory string) error {
 	bucket := s.Bucket(x.Bucket)
 
 	err = bucket.PutReader(directory+result.Filename(), buffy, size, result.MIME, s3.BucketOwnerFull)
-	return err
+	return makeErr(err, "")
 }

@@ -1,5 +1,5 @@
 /*
-Barkup is a library for backing things up. It provides tools for writing bare-bones backup programs in Go. The library is broken out into exporters and storers. Currently, those are: MySQL, Postgres, S3
+Package barkup is a library for backing things up. It provides tools for writing bare-bones backup programs in Go. The library is broken out into exporters and storers. Currently, those are: MySQL, Postgres, S3
 
 Quick Example
 

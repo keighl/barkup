@@ -1,7 +1,6 @@
 package barkup
 
 import (
-	"errors"
 	"launchpad.net/goamz/aws"
 	"os"
 	"testing"
@@ -22,7 +21,7 @@ func Test_S3_Store_Success(t *testing.T) {
 	}
 
 	err := s.Store(&ExportResult{"test/test.txt", "text/plain", nil}, "test/")
-	expect(t, err, nil)
+	expect(t, err, (*Error)(nil))
 }
 
 func Test_S3_Store_Fail(t *testing.T) {
@@ -41,7 +40,7 @@ func Test_S3_Store_Fail(t *testing.T) {
 
 	_, _ = os.Create("test/test.txt")
 	err := s.Store(&ExportResult{"test/test.txt", "text/plain", nil}, "test/")
-	refute(t, err, nil)
+	refute(t, err, (*Error)(nil))
 }
 
 func Test_S3_Store_ExportError(t *testing.T) {
@@ -53,6 +52,6 @@ func Test_S3_Store_ExportError(t *testing.T) {
 	}
 
 	_, _ = os.Create("test/test.txt")
-	err := s.Store(&ExportResult{"", "text/plain", errors.New("*****")}, "test/")
+	err := s.Store(&ExportResult{"", "text/plain", &Error{}}, "test/")
 	refute(t, err, nil)
 }
