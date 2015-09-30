@@ -156,7 +156,9 @@ $ ./backup-program
 
 ### RethinkDB
 
-The RethinkDB exporter uses `rethinkdb dump` to make a gzipped archive of your cluster. `rethinkdb` must be installed on your system.
+The RethinkDB exporter uses `rethinkdb dump` to make a gzipped archive of your cluster. `rethinkdb-dump` must be installed on your system.
+
+`$ sudo pip install rethinkdb`
 
 **Usage**
 
