@@ -56,6 +56,20 @@ $ go build
 @hourly /path/to/backup-program
 ```
 
+## Cron
+
+Because barkup executes system commands like `tar`, `mysqldump`, etc, you may run into issues where crontab can't find 'em. The crontab shell is super stripped down, but you can shim the `PATH` environment variable to access stuff.
+
+```
+PATH=$PATH:/usr/local/bin:/usr/bin:/bin
+
+@hourly /path/to/backup-program
+```
+
+This is especially the case for the RethinkDB exporter `rethink-dump` which executes system commands itself ("exec inception").
+
+* * * * * 
+
 ## Exporters
 
 Exporters provide a common interface for backing things up via the `Export()` method. It writes an export file to the local disk, and returns an `ExportResult` which can be passed on to a [storer](#storers), or to another location on the disk.
