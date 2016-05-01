@@ -9,7 +9,7 @@ Barkup is a library for backing things up. It provides tools for writing bare-bo
 
 **Exporters:** `MySQL` `Postgres` `RethinkDB`
 
-**Storers:** `S3`
+**Storers:** `S3` `SoftLayers object storage` `Rackspace cloud files` `Swift object storage` `Openstack object storage`
 
 ## Quick Example (mysql to s3)
 
@@ -217,3 +217,20 @@ err := someExportResult.To("data/", s3)
 * ap-northeast-1
 * sa-east-1
 
+
+
+### Softlayer, Openstack, Swift, Rackspace
+
+
+**Usage**
+
+```go
+o := &barkup.ObjectStorage{
+		APIKey:    "xx",
+		Username:  "xx",
+		AuthURL:   "xx", // tested with V1 auth urls
+		Container: "xx",
+	}
+
+	err := result.To(result.Filename(), o)
+```
