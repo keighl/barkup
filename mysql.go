@@ -38,14 +38,14 @@ func (x MySQL) Export() *ExportResult {
 	dumpPath := fmt.Sprintf(`bu_%v_%v.sql`, x.DB, time.Now().Unix())
 
 	options := append(x.dumpOptions(), fmt.Sprintf(`-r%v`, dumpPath))
-	out, err := exec.Command(MysqlDumpCmd, options...).Output()
+	out, err := exec.Command(MysqlDumpCmd, options...).CombinedOutput()
 	if err != nil {
 		result.Error = makeErr(err, string(out))
 		return result
 	}
 
 	result.Path = dumpPath + ".tar.gz"
-	_, err = exec.Command(TarCmd, "-czf", result.Path, dumpPath).Output()
+	_, err = exec.Command(TarCmd, "-czf", result.Path, dumpPath).CombinedOutput()
 	if err != nil {
 		result.Error = makeErr(err, string(out))
 		return result
