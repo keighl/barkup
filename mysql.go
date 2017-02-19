@@ -60,7 +60,9 @@ func (x MySQL) dumpOptions() []string {
 	options = append(options, fmt.Sprintf(`-h%v`, x.Host))
 	options = append(options, fmt.Sprintf(`-P%v`, x.Port))
 	options = append(options, fmt.Sprintf(`-u%v`, x.User))
-	options = append(options, fmt.Sprintf(`-p%v`, x.Password))
+	if x.Password != "" {
+		options = append(options, fmt.Sprintf(`-p%v`, x.Password))
+	}
 	options = append(options, x.DB)
 	return options
 }
