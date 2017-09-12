@@ -2,6 +2,7 @@ package barkup
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"time"
 )
@@ -21,6 +22,8 @@ type Postgres struct {
 	DB string
 	// Connection Username
 	Username string
+	// Connecion Password
+	Password string
 	// Extra pg_dump options
 	// e.g []string{"--inserts"}
 	Options []string
@@ -31,10 +34,21 @@ func (x Postgres) Export() *ExportResult {
 	result := &ExportResult{MIME: "application/x-tar"}
 	result.Path = fmt.Sprintf(`bu_%v_%v.sql.tar.gz`, x.DB, time.Now().Unix())
 	options := append(x.dumpOptions(), "-Fc", fmt.Sprintf(`-f%v`, result.Path))
-	out, err := exec.Command(PGDumpCmd, options...).Output()
+
+	// Adds a password varible to exec enviroment.
+	// Can be used instead of ~/.pgpass
+	args := os.Environ()
+	if x.Password != "" {
+		args = append(args, "PGPASSWORD="+x.Password)
+	}
+
+	cmd := exec.Command(PGDumpCmd, options...)
+	cmd.Args = args
+	out, err := cmd.Output()
 	if err != nil {
 		result.Error = makeErr(err, string(out))
 	}
+
 	return result
 }
 
