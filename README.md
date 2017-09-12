@@ -129,6 +129,7 @@ postgres := &barkup.Postgres{
 
   // Not necessary if the program runs as an authorized pg user/role
   Username: "XXXXXXXX",
+  Password: "XXXXX",
 
   // Any extra pg_dump options
   Options: []string{"--no-owner"},
@@ -142,7 +143,9 @@ if (result.Error != nil) { panic(result.Error) }
 
 **Connection credentials**
 
-You have two options for allowing barkup to connect to your DB.
+You have three options for allowing barkup to connect to your DB.
+
+Use the Password struct field to set password as the PGPASSWORD enviroment variable.
 
 Add a [`~/.pgpass`](http://www.postgresql.org/docs/9.3/static/libpq-pgpass.html) for account that will run the backup program.
 
