@@ -44,6 +44,7 @@ func (x MySQL) Export(compress bool) *ExportResult {
 		return result
 	}
 
+	result.Path = dumpPath
 	if compress {
 		result.Path = dumpPath + ".tar.gz"
 		_, err = exec.Command(TarCmd, "-czf", result.Path, dumpPath).Output()
