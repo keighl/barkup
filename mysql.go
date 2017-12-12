@@ -32,7 +32,7 @@ type MySQL struct {
 }
 
 // Export produces a `mysqldump` of the specified database, and creates a gzip compressed tarball archive.
-func (x MySQL) Export() *ExportResult {
+func (x MySQL) Export(compress bool) *ExportResult {
 	result := &ExportResult{MIME: "application/x-tar"}
 
 	dumpPath := fmt.Sprintf(`bu_%v_%v.sql`, x.DB, time.Now().Unix())
@@ -44,13 +44,16 @@ func (x MySQL) Export() *ExportResult {
 		return result
 	}
 
-	result.Path = dumpPath + ".tar.gz"
-	_, err = exec.Command(TarCmd, "-czf", result.Path, dumpPath).Output()
-	if err != nil {
-		result.Error = makeErr(err, string(out))
-		return result
+	result.Path = dumpPath
+	if compress {
+		result.Path = dumpPath + ".tar.gz"
+		_, err = exec.Command(TarCmd, "-czf", result.Path, dumpPath).Output()
+		if err != nil {
+			result.Error = makeErr(err, string(out))
+			return result
+		}
+		os.Remove(dumpPath)
 	}
-	os.Remove(dumpPath)
 
 	return result
 }
