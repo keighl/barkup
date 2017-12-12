@@ -57,6 +57,6 @@ func (x *S3) Store(result *ExportResult, directory string) *Error {
 	s := s3.New(auth, aws.Regions[x.Region])
 	bucket := s.Bucket(x.Bucket)
 
-	err = bucket.PutReader(directory+result.Filename(), buffy, size, result.MIME, s3.BucketOwnerFull)
+	err = bucket.PutReader(directory+result.Filename(), buffy, size, result.MIME, s3.BucketOwnerFull, s3.Options{})
 	return makeErr(err, "")
 }
