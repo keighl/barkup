@@ -2,9 +2,10 @@ package barkup
 
 import (
 	"bufio"
-	"launchpad.net/goamz/aws"
-	"launchpad.net/goamz/s3"
 	"os"
+
+	"github.com/goamz/goamz/aws"
+	"github.com/goamz/goamz/s3"
 )
 
 // S3 is a `Storer` interface that puts an ExportResult to the specified S3 bucket. Don't use your main AWS keys for this!! Create read-only keys using IAM

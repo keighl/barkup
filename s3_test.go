@@ -1,9 +1,10 @@
 package barkup
 
 import (
-	"launchpad.net/goamz/aws"
 	"os"
 	"testing"
+
+	"github.com/goamz/goamz/aws"
 )
 
 func Test_S3_Store_Success(t *testing.T) {
