@@ -2,8 +2,8 @@ package barkup
 
 import (
 	"bufio"
-	"launchpad.net/goamz/aws"
-	"launchpad.net/goamz/s3"
+	"github.com/go-amz/amz/aws"
+	"github.com/go-amz/amz/s3"
 	"os"
 )
 
