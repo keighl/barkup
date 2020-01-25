@@ -1,7 +1,7 @@
 package barkup
 
 import (
-	"launchpad.net/goamz/aws"
+	"gopkg.in/amz.v1/aws"
 	"os"
 	"testing"
 )
