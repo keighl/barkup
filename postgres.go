@@ -16,6 +16,8 @@ type Postgres struct {
 	DB string
 	// Connection Username
 	Username string
+	// Connection Password
+	Password string
 	// PGDumpCmd is the path to the `pg_dump` executable
 	PGDumpCmd string "pg_dump"
 	// Extra pg_dump options
@@ -52,6 +54,10 @@ func (x Postgres) dumpOptions() []string {
 
 	if x.Username != "" {
 		options = append(options, fmt.Sprintf(`-U%v`, x.Username))
+	}
+
+	if x.Password != "" {
+		options = append(options, fmt.Sprintf(`-W%v`, x.Password))
 	}
 
 	return options
