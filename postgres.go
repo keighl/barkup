@@ -29,7 +29,7 @@ type Postgres struct {
 func (x Postgres) Export() *ExportResult {
 	result := &ExportResult{MIME: "application/x-tar"}
 	result.Path = fmt.Sprintf(`bu_%v_%v.sql.tar.gz`, x.DB, time.Now().Unix())
-	options := append(x.dumpOptions(), "-Fc", fmt.Sprintf(`-f%v`, result.Path))
+	options := append(x.dumpOptions(), "-Fc", fmt.Sprintf(`-f%v`, result.Path), fmt.Sprint(" | echo ", x.Password))
 	out, err := exec.Command(x.PGDumpCmd, options...).Output()
 	if err != nil {
 		result.Error = makeErr(err, string(out))
@@ -54,10 +54,6 @@ func (x Postgres) dumpOptions() []string {
 
 	if x.Username != "" {
 		options = append(options, fmt.Sprintf(`-U%v`, x.Username))
-	}
-
-	if x.Password != "" {
-		options = append(options, fmt.Sprintf(`-W%v`, x.Password))
 	}
 
 	return options
