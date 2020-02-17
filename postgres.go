@@ -56,9 +56,5 @@ func (x Postgres) dumpOptions() []string {
 		options = append(options, fmt.Sprintf(`-U%v`, x.Username))
 	}
 
-	if x.Password != "" {
-		options = append(options, fmt.Sprintf(`--password%v`, x.Password))
-	}
-
 	return options
 }
