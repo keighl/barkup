@@ -41,23 +41,23 @@ func (x Postgres) dumpOptions() []string {
 	options := x.Options
 
 	if x.DB != "" {
-		options = append(options, fmt.Sprintf(`-d%v`, x.DB))
+		options = append(options, fmt.Sprintf(`-d %v`, x.DB))
 	}
 
 	if x.Host != "" {
-		options = append(options, fmt.Sprintf(`-h%v`, x.Host))
+		options = append(options, fmt.Sprintf(`-h %v`, x.Host))
 	}
 
 	if x.Port != "" {
-		options = append(options, fmt.Sprintf(`-p%v`, x.Port))
+		options = append(options, fmt.Sprintf(`-p %v`, x.Port))
 	}
 
 	if x.Username != "" {
-		options = append(options, fmt.Sprintf(`-U%v`, x.Username))
+		options = append(options, fmt.Sprintf(`-U %v`, x.Username))
 	}
 
 	if x.Password != "" {
-		options = append(options, fmt.Sprintf(`-W%v`, x.Password))
+		options = append(options, fmt.Sprintf(`-W %v`, x.Password))
 	}
 
 	return options
