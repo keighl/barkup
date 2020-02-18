@@ -6,11 +6,6 @@ import (
 	"time"
 )
 
-var (
-	// PGDumpCmd is the path to the `pg_dump` executable
-	PGDumpCmd = "pg_dump"
-)
-
 // Postgres is an `Exporter` interface that backs up a Postgres database via the `pg_dump` command
 type Postgres struct {
 	// DB Host (e.g. 127.0.0.1)
@@ -21,6 +16,8 @@ type Postgres struct {
 	DB string
 	// Connection Username
 	Username string
+	// PGDumpCmd is the path to the `pg_dump` executable
+	PGDumpCmd string "pg_dump"
 	// Extra pg_dump options
 	// e.g []string{"--inserts"}
 	Options []string
@@ -31,7 +28,7 @@ func (x Postgres) Export() *ExportResult {
 	result := &ExportResult{MIME: "application/x-tar"}
 	result.Path = fmt.Sprintf(`bu_%v_%v.sql.tar.gz`, x.DB, time.Now().Unix())
 	options := append(x.dumpOptions(), "-Fc", fmt.Sprintf(`-f%v`, result.Path))
-	out, err := exec.Command(PGDumpCmd, options...).Output()
+	out, err := exec.Command(x.PGDumpCmd, options...).Output()
 	if err != nil {
 		result.Error = makeErr(err, string(out))
 	}
