@@ -16,8 +16,6 @@ type Postgres struct {
 	DB string
 	// Connection Username
 	Username string
-	// Connection Password
-	Password string
 	// PGDumpCmd is the path to the `pg_dump` executable
 	PGDumpCmd string "pg_dump"
 	// Extra pg_dump options
